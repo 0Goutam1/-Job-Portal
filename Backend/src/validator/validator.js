@@ -15,42 +15,55 @@ const {body, validationResult} = require('express-validator')
 }
 
 
- const registerValidator= ()=>
-    [
-    body("userName")
-      .trim()
-      .notEmpty()
-      .withMessage("Name is required"),
+ const registerValidator = () => [
+     body("userName")
+       .trim()
+       .notEmpty()
+       .withMessage("Name is required"),
 
-    body("email")
-      .isEmail()
-      .withMessage("Enter a valid email"),
+     body("email")
+       .trim()
+       .isEmail()
+       .withMessage("Enter a valid email"),
+
+     body("password")
+       .isLength({ min: 6 })
+       .withMessage("Password must be at least 6 characters"),
+
+     body("otp")
+       .trim()
+       .notEmpty()
+       .withMessage("Please enter the OTP sent to your email")
+       .bail()
+       .matches(/^\d{6}$/)
+       .withMessage("OTP must be 6 digits"),
+
+     validation
+ ]
+
+ const sendOTPValidator = () => [
+   body("email")
+     .trim()
+     .isEmail()
+     .withMessage("Enter a valid email"),
+   validation
+ ]
+
+ const loginValidator = () => [
+     body("userName")
+       .trim()
+       .notEmpty()
+      .withMessage("Name is required"),
 
     body("password")
       .isLength({ min: 6 })
       .withMessage("Password must be at least 6 characters"),
-      
-      validation
+
+    validation
 ]
-  
-
-
- const loginValidator = ()=>
-     [
-    body("userName")
-      .trim()
-      .notEmpty()
-      .withMessage("Name is required"),
-
-    body("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must be at least 6 characters"),
-
-        validation
-  ]
 
 module.exports={
   loginValidator,
-  registerValidator
+  registerValidator,
+  sendOTPValidator
 }
-  

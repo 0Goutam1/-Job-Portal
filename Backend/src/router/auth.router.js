@@ -2,10 +2,10 @@ const express = require("express")
 const authRouter = express.Router()
 const authController= require("../controller/auth.Controller")
 const  verify  = require ('../middleware/verify.Middleware')
-const {registerValidator , loginValidator}= require('../validator/validator')
+const {registerValidator , loginValidator, sendOTPValidator}= require('../validator/validator')
 
 
-authRouter.post('/send-otp', authController.sendOTP)
+authRouter.post('/send-otp',sendOTPValidator(),authController.sendOTP)
 
 authRouter.post('/register',registerValidator(),authController.registerController)
 authRouter.post('/login',loginValidator(),authController.loginController)

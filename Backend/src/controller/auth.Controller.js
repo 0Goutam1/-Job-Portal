@@ -6,7 +6,7 @@ const OTP = require('../model/OTP.model')
 const nodemailer= require('nodemailer')
 
 const sendOTP = async (req,res)=>{
-    const {email} = req.body
+    const email = req.body.email.trim().toLowerCase()
     const generatedOtp = `${Math.floor(100000 + Math.random()*900000)}`
     const transporter = nodemailer.createTransport({
         service:'gmail',
@@ -22,21 +22,21 @@ const sendOTP = async (req,res)=>{
         html:`<p> For account verifaction OTP :<b>${generatedOtp}</b> </p>
         <p>Yeh Opt sirf 5 minute ke liye valid hasHimportCoordinator.</p>`
     }
-    await OTP.deleteMany({ email });
-
-    await OTP.create({
-    email,
-    otp: generatedOtp
-     });
-
     await transporter.sendMail(mailOptions);
+    await OTP.findOneAndUpdate(
+        { email },
+        { otp: generatedOtp, createdAt: new Date() },
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
     res.status(200).json({
         message :"OTP aapke email par bhej diya gaya hai"
     })
 }
 
 async function registerController(req,res){
-    const {userName,email,password,role,otp}= req.body
+    const {userName,password,role,otp}= req.body
+    const email = req.body.email.trim().toLowerCase()
 
     const isuser= await userModel.findOne({
         $or:[
@@ -56,7 +56,7 @@ async function registerController(req,res){
 
     if (!otpRecord) {
     return res.status(400).json({
-        message: "OTP expired or OTP not found"
+        message: "OTP nahi mila ya expire ho gaya. Naya OTP mangwayein."
     });
     }
 
