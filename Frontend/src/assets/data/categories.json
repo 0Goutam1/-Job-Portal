@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Web Development",
+    "icon": "ri-code-s-slash-line",
+    "jobs": 128,
+    "description": "Frontend, Backend and Full Stack Development."
+  },
+  {
+    "id": 2,
+    "name": "UI/UX Design",
+    "icon": "ri-palette-line",
+    "jobs": 64,
+    "description": "Design modern and user-friendly digital experiences."
+  },
+  {
+    "id": 3,
+    "name": "Data Science",
+    "icon": "ri-bar-chart-box-line",
+    "jobs": 82,
+    "description": "Analyze data and build intelligent solutions."
+  },
+  {
+    "id": 4,
+    "name": "Artificial Intelligence",
+    "icon": "ri-robot-2-line",
+    "jobs": 45,
+    "description": "Build AI and Machine Learning applications."
+  },
+  {
+    "id": 5,
+    "name": "Cloud Computing",
+    "icon": "ri-cloud-line",
+    "jobs": 58,
+    "description": "Work with AWS, Azure and Google Cloud."
+  },
+  {
+    "id": 6,
+    "name": "Cyber Security",
+    "icon": "ri-shield-check-line",
+    "jobs": 39,
+    "description": "Protect systems, networks and applications."
+  },
+  {
+    "id": 7,
+    "name": "Mobile Development",
+    "icon": "ri-smartphone-line",
+    "jobs": 53,
+    "description": "Android and iOS application development."
+  },
+  {
+    "id": 8,
+    "name": "DevOps",
+    "icon": "ri-settings-3-line",
+    "jobs": 34,
+    "description": "CI/CD, Docker, Kubernetes and automation."
+  },
+  {
+    "id": 9,
+    "name": "Software Testing",
+    "icon": "ri-bug-line",
+    "jobs": 47,
+    "description": "Manual and automation testing roles."
+  },
+  {
+    "id": 10,
+    "name": "Digital Marketing",
+    "icon": "ri-megaphone-line",
+    "jobs": 61,
+    "description": "SEO, Social Media and Performance Marketing."
+  }
+]

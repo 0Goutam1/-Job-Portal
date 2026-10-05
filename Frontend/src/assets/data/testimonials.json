@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Aarav Sharma",
+    "position": "Frontend Developer",
+    "company": "Google",
+    "rating": 5,
+    "image": "https://i.pravatar.cc/150?img=12",
+    "review": "This platform made my job search incredibly easy. Within two weeks, I received multiple interview calls and finally landed my dream job."
+  },
+  {
+    "id": 2,
+    "name": "Priya Verma",
+    "position": "UI/UX Designer",
+    "company": "Adobe",
+    "rating": 5,
+    "image": "https://i.pravatar.cc/150?img=32",
+    "review": "The interface is clean, fast, and easy to use. I loved the personalized job recommendations and simple application process."
+  },
+  {
+    "id": 3,
+    "name": "Rahul Mehta",
+    "position": "Python Developer",
+    "company": "Infosys",
+    "rating": 4,
+    "image": "https://i.pravatar.cc/150?img=15",
+    "review": "A well-designed job portal with verified companies and updated listings. It helped me find a suitable role much faster."
+  },
+  {
+    "id": 4,
+    "name": "Sneha Kapoor",
+    "position": "Data Analyst",
+    "company": "Accenture",
+    "rating": 5,
+    "image": "https://i.pravatar.cc/150?img=47",
+    "review": "The dashboard and profile management features are excellent. I highly recommend this platform to freshers and experienced professionals."
+  }
+]
