@@ -4,6 +4,8 @@ const bcrypt = require("bcrypt")
 const redis= require("../config/cache")
 const OTP = require('../model/OTP.model')
 const nodemailer= require('nodemailer')
+const { Resend } = require("resend");
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendOTP = async (req, res) => {
@@ -35,6 +37,7 @@ const sendOTP = async (req, res) => {
                 <h2>Hire Plus - Email Verification</h2>
                 <p>Your verification OTP is:</p>
                 <h1>${generatedOtp}</h1>
+                <p>This OTP is valid for 5 minutes.</p>
             `
         });
 
