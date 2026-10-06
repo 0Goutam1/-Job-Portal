@@ -4,45 +4,63 @@ const bcrypt = require("bcrypt")
 const redis= require("../config/cache")
 const OTP = require('../model/OTP.model')
 const nodemailer= require('nodemailer')
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const sendOTP = async (req,res)=>{
-    const email = req.body.email.trim().toLowerCase()
-    const generatedOtp = `${Math.floor(100000 + Math.random()*900000)}`
-   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
+const sendOTP = async (req, res) => {
+    try {
+        const email = req.body.email.trim().toLowerCase();
 
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+        const generatedOtp = `${Math.floor(
+            100000 + Math.random() * 900000
+        )}`;
 
-    family: 4,
+        await OTP.findOneAndUpdate(
+            { email },
+            {
+                otp: generatedOtp,
+                createdAt: new Date()
+            },
+            {
+                upsert: true,
+                new: true,
+                setDefaultsOnInsert: true
+            }
+        );
 
-    connectionTimeout: 30000,
-    greetingTimeout: 30000,
-    socketTimeout: 30000,
-});
+        const { data, error } = await resend.emails.send({
+            from: "Hire Plus <onboarding@resend.dev>",
+            to: [email],
+            subject: "Hire Plus - Email Verification OTP",
+            html: `
+                <h2>Hire Plus - Email Verification</h2>
+                <p>Your verification OTP is:</p>
+                <h1>${generatedOtp}</h1>
+            `
+        });
 
-    const mailOptions={
-        from: process.env.EMAIL_USER,
-        to:email,
-        subject:'Hire Plus - Email Verification OTP',
-        html:`<p> For account verifaction OTP :<b>${generatedOtp}</b> </p>
-        <p>Yeh Opt sirf 5 minute ke liye valid hasHimportCoordinator.</p>`
+        if (error) {
+            console.error("Resend error:", error);
+
+            return res.status(500).json({
+                message: "OTP email bhejne mein problem hui"
+            });
+        }
+
+        console.log("OTP email sent successfully:", data);
+
+        return res.status(200).json({
+            message: "OTP aapke email par bhej diya gaya hai"
+        });
+
+    } catch (error) {
+        console.error("Send OTP error:", error);
+
+        return res.status(500).json({
+            message: "OTP bhejne mein problem hui"
+        });
     }
-    await transporter.sendMail(mailOptions);
-    await OTP.findOneAndUpdate(
-        { email },
-        { otp: generatedOtp, createdAt: new Date() },
-        { upsert: true, new: true, setDefaultsOnInsert: true }
-    );
+};
 
-    res.status(200).json({
-        message :"OTP aapke email par bhej diya gaya hai"
-    })
-}
 
 async function registerController(req,res){
     const {userName,password,role,otp}= req.body
