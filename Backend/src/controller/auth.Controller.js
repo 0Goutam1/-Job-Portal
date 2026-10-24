@@ -3,67 +3,50 @@ const userModel= require("../model/user.model")
 const bcrypt = require("bcrypt")
 const redis= require("../config/cache")
 const OTP = require('../model/OTP.model')
-const nodemailer= require('nodemailer')
-const { Resend } = require("resend");
+const { BrevoClient } = require('@getbrevo/brevo');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const brevo = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY,
+});
 
 const sendOTP = async (req, res) => {
     try {
         const email = req.body.email.trim().toLowerCase();
+        const generatedOtp = `${Math.floor(100000 + Math.random() * 900000)}`;
 
-        const generatedOtp = `${Math.floor(
-            100000 + Math.random() * 900000
-        )}`;
+        // Send email via Brevo HTTP API (won't timeout on Render)
+        await brevo.transactionalEmails.sendTransacEmail({
+            sender: {
+                name: "Hire Plus",
+                email: process.env.EMAIL_USER, // Yeh wahi email honi chahiye jo Brevo par verified ho
+            },
+            to: [
+                {
+                    email: email,
+                },
+            ],
+            subject: 'Hire Plus - Email Verification OTP',
+            htmlContent: `
+                <p>For account verification OTP: <b>${generatedOtp}</b></p>
+             `,
+        });
 
         await OTP.findOneAndUpdate(
             { email },
-            {
-                otp: generatedOtp,
-                createdAt: new Date()
-            },
-            {
-                upsert: true,
-                new: true,
-                setDefaultsOnInsert: true
-            }
+            { otp: generatedOtp, createdAt: new Date() },
+            { upsert: true, new: true, setDefaultsOnInsert: true }
         );
 
-        const { data, error } = await resend.emails.send({
-            from: "Hire Plus <onboarding@resend.dev>",
-            to: [email],
-            subject: "Hire Plus - Email Verification OTP",
-            html: `
-                <h2>Hire Plus - Email Verification</h2>
-                <p>Your verification OTP is:</p>
-                <h1>${generatedOtp}</h1>
-                <p>This OTP is valid for 5 minutes.</p>
-            `
+        res.status(200).json({
+            message: "OTP is send to your email"
         });
-
-        if (error) {
-            console.error("Resend error:", error);
-
-            return res.status(500).json({
-                message: "OTP email bhejne mein problem hui"
-            });
-        }
-
-        console.log("OTP email sent successfully:", data);
-
-        return res.status(200).json({
-            message: "OTP aapke email par bhej diya gaya hai"
-        });
-
     } catch (error) {
-        console.error("Send OTP error:", error);
-
-        return res.status(500).json({
-            message: "OTP bhejne mein problem hui"
+        console.error("Error sending OTP via Brevo:", error);
+        res.status(500).json({
+            message: error
         });
     }
-};
-
+}
 
 async function registerController(req,res){
     const {userName,password,role,otp}= req.body
@@ -151,7 +134,11 @@ async function registerController(req,res){
 
     res.status(200).json({
         message:"login sucessesfully",
-        user
+        user:{
+            id: user._id,
+            userName : user.userName,
+            email : user.email
+        }
 
     })
     

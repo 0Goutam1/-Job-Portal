@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@getbrevo/brevo": "^6.2.0",
     "@imagekit/nodejs": "^7.12.1",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
